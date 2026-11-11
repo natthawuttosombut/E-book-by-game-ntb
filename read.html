@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>อ่าน E-Book</title>
+<link rel="icon" href="cover.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;700&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="bar">
+  <a class="back" href="index.html">← ห้องสมุด</a>
+  <div class="t" id="title"></div>
+  <a class="dl" id="dl" href="#" download hidden>ดาวน์โหลด PDF</a>
+</div>
+<div class="reader" id="reader"></div>
+<div class="end" id="end"></div>
+<div class="counter" id="counter">1 / 1</div>
+<script src="books.js"></script>
+<script>
+// เลือกเล่มจากพารามิเตอร์ ?b= ถ้าไม่พบใช้เล่มแรก
+const id = new URLSearchParams(location.search).get('b');
+const book = BOOKS.find(x => x.id === id) || BOOKS[0];
+document.title = book.title + ' · Game NTB';
+document.getElementById('title').textContent = book.title;
+if (book.pdf) { const d = document.getElementById('dl'); d.href = book.pdf; d.hidden = false; }
+const reader = document.getElementById('reader');
+// โหลดรูปทุกหน้า (หน้าแรกโหลดทันที ที่เหลือโหลดเมื่อเลื่อนใกล้)
+for (let i = 1; i <= book.pages; i++) {
+  const img = document.createElement('img');
+  img.src = book.folder + '/' + book.prefix + String(i).padStart(2, '0') + '.jpg';
+  img.alt = 'หน้า ' + i;
+  if (i > 1) img.loading = 'lazy';
+  img.dataset.page = i;
+  reader.appendChild(img);
+}
+document.getElementById('end').innerHTML = 'จบแล้ว ขอบคุณที่อ่านนะครับ<br><a class="btn" href="index.html">กลับไปห้องสมุด</a>';
+// แถบความคืบหน้าและตัวนับหน้า
+const bar = document.getElementById('progress'), counter = document.getElementById('counter');
+const imgs = [...reader.children];
+function update() {
+  const h = document.documentElement.scrollHeight - innerHeight;
+  bar.style.width = (h > 0 ? scrollY / h * 100 : 0) + '%';
+  let cur = 1;
+  for (const im of imgs) { if (im.getBoundingClientRect().top < innerHeight * 0.5) cur = +im.dataset.page; }
+  counter.textContent = cur + ' / ' + book.pages;
+}
+addEventListener('scroll', update, {passive: true});
+addEventListener('resize', update);
+update();
+</script>
+</body>
+</html>

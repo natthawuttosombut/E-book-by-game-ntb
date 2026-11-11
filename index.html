@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ห้องสมุดของ Game NTB</title>
+<meta name="description" content="ห้องสมุด E-Book ของ Game NTB อ่านฟรีออนไลน์">
+<meta property="og:title" content="ห้องสมุดของ Game NTB">
+<meta property="og:description" content="E-Book 2.5 / 40 คะแนน — อ่านฟรี">
+<meta property="og:image" content="cover.jpg">
+<link rel="icon" href="cover.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;700&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site">
+  <h1>ห้องสมุดของ <span>Game NTB</span></h1>
+  <p>E-Book ที่ไม่มีคำนำและสารบัญ มีแต่ความพยายาม</p>
+</header>
+<main>
+  <section class="shelf">
+    <div class="books" id="books"></div>
+    <div class="plank"></div>
+    <div class="caption" id="caption"></div>
+  </section>
+</main>
+<footer>© Game NTB · อ่านได้ฟรี แชร์ลิงก์ให้เพื่อนได้เลย</footer>
+<script src="books.js"></script>
+<script>
+// สร้างปกหนังสือบนชั้นจากรายการใน books.js
+const wrap = document.getElementById('books');
+const cap = document.getElementById('caption');
+BOOKS.forEach(b => {
+  const a = document.createElement('a');
+  a.className = 'book';
+  a.href = 'read.html?b=' + encodeURIComponent(b.id);
+  a.setAttribute('aria-label', 'อ่าน ' + b.title);
+  a.innerHTML = '<div class="cover"><img src="' + b.cover + '" alt="ปกหนังสือ ' + b.title + '"></div>';
+  wrap.appendChild(a);
+});
+// แสดงรายละเอียดของเล่มแรกใต้ชั้น
+const f = BOOKS[0];
+cap.innerHTML = '<h2>' + f.title + '</h2><p>' + f.desc + '</p>' +
+  '<a class="btn" href="read.html?b=' + encodeURIComponent(f.id) + '">เริ่มอ่าน</a>' +
+  (f.pdf ? '<a class="btn ghost" href="' + f.pdf + '" download>ดาวน์โหลด PDF</a>' : '');
+</script>
+</body>
+</html>
